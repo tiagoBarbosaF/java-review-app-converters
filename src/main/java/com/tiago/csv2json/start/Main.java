@@ -1,7 +1,9 @@
 package com.tiago.csv2json.start;
 
 import com.tiago.csv2json.converters.csv.CsvConverter;
+import com.tiago.csv2json.converters.utils.FileUtils;
 
+import java.nio.file.Path;
 import java.util.Scanner;
 
 public class Main {
@@ -22,7 +24,7 @@ public class Main {
 
             switch (option) {
                 case "1":
-                    menuCsv();
+                    menuTypeCsv();
                     System.out.print("\nEnter and option: ");
                     String optionCsv = scanner.nextLine();
 
@@ -30,11 +32,11 @@ public class Main {
                         break;
                     }
 
+                    CsvConverter csvConverter = new CsvConverter();
                     switch (optionCsv) {
                         case "1":
-                            System.out.println("Enter the file name:");
-                            String fileName = scanner.nextLine();
-                            System.out.println("Enter the file content: (after input content press Enter, Ctrl+Z, Enter again)");
+
+                            System.out.println("Enter the file content (after input content press Enter two times):");
                             StringBuilder csvStringBuilder = new StringBuilder();
                             while (scanner.hasNextLine()) {
                                 String line = scanner.nextLine();
@@ -44,9 +46,19 @@ public class Main {
                                 csvStringBuilder.append(line).append("\n");
                             }
 
-                            CsvConverter.convertCsv2jsonFromString(fileName, csvStringBuilder.toString());
+                            String resultCsvConverter = csvConverter.convertCsv2jsonFromString(csvStringBuilder.toString());
+                            System.out.println(resultCsvConverter);
+
+                            saveCsvFileConverted(resultCsvConverter);
                             break;
                         case "2":
+                            System.out.print("\nEnter the path of the file: ");
+                            String pathFile = scanner.nextLine();
+
+                            String resultFileConverter = csvConverter.convertCsv2JsonFromFile(Path.of(pathFile));
+                            System.out.println(resultFileConverter);
+
+                            saveCsvFileConverted(resultFileConverter);
                             break;
                         default:
                             System.out.println("Invalid option...");
@@ -63,6 +75,17 @@ public class Main {
         }
     }
 
+    private static void saveCsvFileConverted(String resultCsvConverter) {
+        System.out.print("\nWould you like to save the file (y/n): ");
+        String saveCsvOption = scanner.nextLine();
+
+        if (saveCsvOption.equalsIgnoreCase("y")) {
+            System.out.println("\nEnter the file name:");
+            String fileName = scanner.nextLine();
+            FileUtils.saveFile(fileName, resultCsvConverter);
+        }
+    }
+
     private static void menu() {
         String menuBar = "*".repeat(40);
 
@@ -74,7 +97,7 @@ public class Main {
         System.out.println(menuBar);
     }
 
-    private static void menuCsv() {
+    private static void menuTypeCsv() {
         System.out.printf("%n   1 - Converter Csv to Json (using text)%n" +
                 "   2 - Converter Csv to Json (using File)%n" +
                 "   0 - Exit to Menu%n");

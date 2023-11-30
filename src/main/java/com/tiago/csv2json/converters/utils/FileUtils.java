@@ -1,13 +1,12 @@
 package com.tiago.csv2json.converters.utils;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.List;
 
 public class FileUtils {
 

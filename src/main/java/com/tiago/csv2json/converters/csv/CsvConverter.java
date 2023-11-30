@@ -23,27 +23,23 @@ public class CsvConverter {
 
     private static final Gson gson = new Gson();
 
-    public static void convertCsv2jsonFromString(String fileName, String csvContent) {
+    public String convertCsv2jsonFromString(String csvContent) {
         try (CSVReader csvReader = new CSVReaderBuilder(new StringReader(csvContent))
                 .withSkipLines(1)
                 .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
                 .build()) {
-            String jsonProducts = converterCsvToJson(csvReader);
-            System.out.println(jsonProducts);
-
-            FileUtils.saveFile(fileName, jsonProducts);
+            return converterCsvToJson(csvReader);
         } catch (IOException | CsvException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void convertCsv2JsonFromFile(Path filePath) {
+    public String convertCsv2JsonFromFile(Path filePath) {
         try (CSVReader csvReader = new CSVReaderBuilder(Files.newBufferedReader(filePath))
                 .withSkipLines(1)
                 .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
                 .build()) {
-            String jsonProducts = converterCsvToJson(csvReader);
-            System.out.println(jsonProducts);
+            return converterCsvToJson(csvReader);
         } catch (IOException | CsvException e) {
             throw new RuntimeException(e);
         }
