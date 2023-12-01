@@ -5,11 +5,9 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
-import com.tiago.csv2json.converters.utils.FileUtils;
 import com.tiago.csv2json.models.Products;
 import org.springframework.stereotype.Service;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -21,9 +19,9 @@ import java.util.List;
 @Service
 public class CsvConverter {
 
-    private static final Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
 
-    public String convertCsv2jsonFromString(String csvContent) {
+    public String convertCsvToJsonFromString(String csvContent) {
         try (CSVReader csvReader = new CSVReaderBuilder(new StringReader(csvContent))
                 .withSkipLines(1)
                 .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
@@ -34,7 +32,7 @@ public class CsvConverter {
         }
     }
 
-    public String convertCsv2JsonFromFile(Path filePath) {
+    public String convertCsvToJsonFromFile(Path filePath) {
         try (CSVReader csvReader = new CSVReaderBuilder(Files.newBufferedReader(filePath))
                 .withSkipLines(1)
                 .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
@@ -51,6 +49,6 @@ public class CsvConverter {
                 .map(record -> new Products(Long.parseLong(record[0]), record[1], record[2], record[3], new BigDecimal(record[4])))
                 .toList();
         ArrayList<Products> productsListJson = new ArrayList<>(productsList);
-        return gson.toJson(productsListJson);
+        return GSON.toJson(productsListJson);
     }
 }

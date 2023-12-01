@@ -1,12 +1,13 @@
 package com.tiago.csv2json.converters.utils;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileUtils {
 
@@ -19,14 +20,19 @@ public class FileUtils {
         }
     }
 
-    public static void readFile(Path path) {
+    public static List<String> readFile(Path path) {
+        List<String> records = new ArrayList<>();
+
         try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);) {
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                records.add(line);
             }
+
+            return records;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+//        return null;
     }
 }

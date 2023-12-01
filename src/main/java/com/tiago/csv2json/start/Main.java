@@ -1,16 +1,37 @@
 package com.tiago.csv2json.start;
 
-import com.tiago.csv2json.converters.csv.CsvConverter;
+import com.google.gson.Gson;
+import com.tiago.csv2json.converters.csv.CsvService;
+import com.tiago.csv2json.converters.json.JsonConverter;
 import com.tiago.csv2json.converters.utils.FileUtils;
 
-import java.nio.file.Path;
 import java.util.Scanner;
+
 
 public class Main {
 
     private static final Scanner scanner = new Scanner(System.in);
+    private static Gson gson = new Gson();
+    private static String textWithoutArray = """
+            {
+                 "id": 1,
+                 "name": "Laptop",
+                 "shortDescription": "Powerful laptop",
+                 "description": "High-performance laptop with SSD",
+                 "value": 1200.00
+               }
+            """;
+
+    private static String textWithArray = """
+            [{"id":1,"name":"Laptop","shortDescription":"Powerful laptop","description":"High-performance laptop with SSD","value":1200.00},{"id":2,"name":"Smartphone","shortDescription":"Latest smartphone","description":"Feature-rich smartphone with dual cameras","value":699.99},{"id":3,"name":"Headphones","shortDescription":"Wireless headphones","description":"Over-ear headphones with noise cancellation","value":199.95}]
+            """;
 
     public static void start() {
+
+        JsonConverter jsonConverter = new JsonConverter();
+        String test = jsonConverter.convertJsonToCsvFromString(textWithArray, ";");
+        System.out.println(test);
+        FileUtils.saveFile("test-csv-file.csv",test);
 
         while (true) {
             menu();
@@ -25,64 +46,32 @@ public class Main {
             switch (option) {
                 case "1":
                     menuTypeCsv();
-                    System.out.print("\nEnter and option: ");
+
+                    System.out.print("\nEnter an option: ");
                     String optionCsv = scanner.nextLine();
 
                     if (optionCsv.equals("0")) {
                         break;
                     }
 
-                    CsvConverter csvConverter = new CsvConverter();
-                    switch (optionCsv) {
-                        case "1":
-
-                            System.out.println("Enter the file content (after input content press Enter two times):");
-                            StringBuilder csvStringBuilder = new StringBuilder();
-                            while (scanner.hasNextLine()) {
-                                String line = scanner.nextLine();
-                                if (line.isEmpty()) {
-                                    break;
-                                }
-                                csvStringBuilder.append(line).append("\n");
-                            }
-
-                            String resultCsvConverter = csvConverter.convertCsv2jsonFromString(csvStringBuilder.toString());
-                            System.out.println(resultCsvConverter);
-
-                            saveCsvFileConverted(resultCsvConverter);
-                            break;
-                        case "2":
-                            System.out.print("\nEnter the path of the file: ");
-                            String pathFile = scanner.nextLine();
-
-                            String resultFileConverter = csvConverter.convertCsv2JsonFromFile(Path.of(pathFile));
-                            System.out.println(resultFileConverter);
-
-                            saveCsvFileConverted(resultFileConverter);
-                            break;
-                        default:
-                            System.out.println("Invalid option...");
-                            break;
-                    }
-
+                    CsvService.csvOptions(optionCsv, scanner);
                     break;
                 case "2":
+                    menuTypeJson();
+
+                    System.out.print("\nEnter an option: ");
+                    String optionJson = scanner.nextLine();
+
+                    if (optionJson.equalsIgnoreCase("0")){
+                        break;
+                    }
+
+
                     break;
                 default:
                     System.out.println("Invalid option...");
                     break;
             }
-        }
-    }
-
-    private static void saveCsvFileConverted(String resultCsvConverter) {
-        System.out.print("\nWould you like to save the file (y/n): ");
-        String saveCsvOption = scanner.nextLine();
-
-        if (saveCsvOption.equalsIgnoreCase("y")) {
-            System.out.println("\nEnter the file name:");
-            String fileName = scanner.nextLine();
-            FileUtils.saveFile(fileName, resultCsvConverter);
         }
     }
 
@@ -100,6 +89,12 @@ public class Main {
     private static void menuTypeCsv() {
         System.out.printf("%n   1 - Converter Csv to Json (using text)%n" +
                 "   2 - Converter Csv to Json (using File)%n" +
+                "   0 - Exit to Menu%n");
+    }
+
+    private static void menuTypeJson() {
+        System.out.printf("%n   1 - Converter Json to Csv (using text)%n" +
+                "   2 - Converter Json to Csv (using File)%n" +
                 "   0 - Exit to Menu%n");
     }
 }
