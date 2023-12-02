@@ -10,8 +10,7 @@ public class CsvService {
         CsvConverter csvConverter = new CsvConverter();
         switch (optionCsv) {
             case "1":
-
-                System.out.println("Enter the file content (after input content press Enter two times):");
+                System.out.println("Enter the content (after input content press Enter two times):");
                 StringBuilder csvStringBuilder = new StringBuilder();
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
